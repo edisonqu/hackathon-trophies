@@ -14,7 +14,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ id, color }) => {
 
   return (
     <div
-      className={`bg-${color}-400 p-4 rounded-lg shadow-lg`}
+      className={`bg-${color}-400 p-4 rounded-lg shadow-lg h-80`}
       onClick={() => router.push("/project/" + id)}
     >
       <Badge />

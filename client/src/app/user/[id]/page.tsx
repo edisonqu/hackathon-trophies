@@ -1,4 +1,5 @@
 "use client";
+import Nav from "@/components/nav";
 import ProjectCard from "@/components/project-card";
 import { ChevronLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -113,7 +114,7 @@ const projects = [
   },
 ];
 
-export default function Profile() {
+export default function Profile({ params }: { params: { id: string } }) {
   const router = useRouter();
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4">
