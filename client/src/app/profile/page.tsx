@@ -1,7 +1,7 @@
 "use client";
 import ProjectCard from "@/components/project-card";
 import { ChevronLeftIcon } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const user = {
   bio: "rule the world",
