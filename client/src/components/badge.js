@@ -6,11 +6,26 @@ import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphe
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 import { useControls } from 'leva'
 
+const tailwindColors = {
+  'rose': '#F472B6',
+  'orange': '#FB923C',
+  'yellow': '#FACC15',
+  'green': '#4ADE80',
+  'cyan': '#22D3EE',
+  'indigo': '#818CF8',
+  'purple': '#A78BFA',
+  // Add more colors as needed
+};
+
+
+
+
 extend({ MeshLineGeometry, MeshLineMaterial })
 useGLTF.preload('https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/5huRVDzcoDwnbgrKUo1Lzs/53b6dd7d6b4ffcdbd338fa60265949e1/tag.glb')
 useTexture.preload('https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/SOT1hmCesOHxEYxL7vkoZ/c57b29c85912047c414311723320c16b/band.jpg')
 
-function Badge() {
+function Badge({ color, label }){
+  const hexColor = tailwindColors[color] || color;
 
   const { debug } = useControls({ debug: false })
   return (
@@ -20,7 +35,10 @@ function Badge() {
         <Band />
       </Physics>
       <Environment background blur={0.75}>
-        <color attach="background" args={['black']} />
+        <mesh>
+          <boxGeometry args={[100, 100, 100]} />
+          <meshBasicMaterial side={THREE.BackSide} color={hexColor} />
+        </mesh>
         <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
         <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
         <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />

@@ -11,13 +11,17 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ id, color }) => {
   const router = useRouter();
+  console.log("ProjectCard color:", color);
 
   return (
     <div
-      className={`bg-${color}-400 p-4 rounded-lg shadow-lg h-80`}
-      onClick={() => router.push("/project/" + id)}
+      className={`relative bg-${color}-400 rounded-lg shadow-lg cursor-pointer`}
+      onClick={() => router.push("/" + id)}
     >
-      <Badge />
+      <div className="pt-[100%]"></div> {/* This div ensures the 1:1 ratio */}
+      <div className="absolute inset-0 flex items-center justify-center rounded-lg">
+        <Badge color={color} label={id}/>
+      </div>
     </div>
   );
 };

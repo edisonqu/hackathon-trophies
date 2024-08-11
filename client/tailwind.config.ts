@@ -19,6 +19,29 @@ const config = {
     },
     extend: {
       colors: {
+        'cream': '#FAF8F0',
+        'rose': {
+          400: '#F472B6',
+        },
+        'orange': {
+          400: '#FB923C',
+        },
+        'yellow': {
+          400: '#FACC15',
+        },
+        'green': {
+          400: '#4ADE80',
+        },
+        'cyan': {
+          400: '#22D3EE',
+        },
+        'indigo': {
+          400: '#818CF8',
+        },
+        'purple': {
+          400: '#A78BFA',
+        },
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
