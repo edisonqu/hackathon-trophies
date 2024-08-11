@@ -115,6 +115,7 @@ export default function LoginPage() {
 
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
         {!worldcoinVerified && <IDKitWidget
+        // @ts-ignore
               app_id={`${process.env.NEXT_PUBLIC_APP_ID || 'app_staging_5d32f2b8365469d918d4c643ac75c2cc'}`}
               action="verify"
               onSuccess={onSuccess}
