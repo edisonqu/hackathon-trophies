@@ -142,7 +142,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
         <div className="w-2/3 h-screen rounded-sm overflow-hidden">
-          <Badge />
+          <Badge color={"cyan"} label={"some label"} />
         </div>
       </div>
     </main>
