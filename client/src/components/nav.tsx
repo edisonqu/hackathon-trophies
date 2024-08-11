@@ -13,7 +13,7 @@ const Nav = () => {
           </button>
         </div>
         <div className="w-12 h-12 bg-gray-900 rounded-md ml-4 flex items-center justify-center">
-          <span className="text-white">pic</span>{" "}
+          <span className="text-white"></span>{" "}
           {/* Replace with an actual image or icon */}
         </div>
       </div>

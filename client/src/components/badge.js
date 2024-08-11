@@ -1,10 +1,13 @@
+"use client";
 import * as THREE from 'three'
 import { useEffect, useRef, useState } from 'react'
-import { Canvas, extend, useThree, useFrame } from '@react-three/fiber'
-import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei'
+import { Canvas, extend, useThree, useFrame, useLoader } from '@react-three/fiber'
+import { useGLTF, useTexture, Environment, Lightformer, RenderTexture, Center, Resize, Text3D, PerspectiveCamera } from '@react-three/drei'
+import { TextureLoader } from 'three/src/loaders/TextureLoader'
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier'
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 import { useControls } from 'leva'
+
 
 const tailwindColors = {
   'rose': '#F472B6',
@@ -16,15 +19,10 @@ const tailwindColors = {
   'purple': '#A78BFA',
   // Add more colors as needed
 };
-
-
-
-
 extend({ MeshLineGeometry, MeshLineMaterial })
-useGLTF.preload('https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/5huRVDzcoDwnbgrKUo1Lzs/53b6dd7d6b4ffcdbd338fa60265949e1/tag.glb')
-useTexture.preload('https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/SOT1hmCesOHxEYxL7vkoZ/c57b29c85912047c414311723320c16b/band.jpg')
-
-function Badge({ color, label }){
+useGLTF.preload('/tag.glb')
+useTexture.preload('/VercelCardCustom.png')
+function Badge({ name, color, image }) {
   const hexColor = tailwindColors[color] || color;
 
   const { debug } = useControls({ debug: false })
@@ -34,11 +32,8 @@ function Badge({ color, label }){
       <Physics debug={debug} interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
         <Band />
       </Physics>
-      <Environment background blur={0.75}>
-        <mesh>
-          <boxGeometry args={[100, 100, 100]} />
-          <meshBasicMaterial side={THREE.BackSide} color={hexColor} />
-        </mesh>
+      <Environment background blur={0.75} >
+        <color attach="background" args={['hexColor']} />
         <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
         <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
         <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
@@ -50,12 +45,47 @@ function Badge({ color, label }){
 
 export default Badge
 
+
+function BadgeTexture({ user }) {
+  return (
+      <Resize height={0.1} maxWidth={0.925}>
+        <Text3D
+          bevelEnabled={false}
+          bevelSize={0}
+          font="/inter.json"
+          height={0}
+          position={[-0.8, 0, 1]}
+          rotation={[0, Math.PI, Math.PI]}
+          size={0.1}>
+          {user.firstName}
+        </Text3D>
+        <Text3D
+          bevelEnabled={false}
+          bevelSize={0}
+          font="/inter.json"
+          height={0}
+          position={[-0.8, 0.14, 1]}
+          rotation={[0, Math.PI, Math.PI]}
+          size={0.1}>
+          {user.lastName}
+        </Text3D>
+      </Resize>
+  )
+}
+
 function Band({ maxSpeed = 50, minSpeed = 10 }) {
   const band = useRef(), fixed = useRef(), j1 = useRef(), j2 = useRef(), j3 = useRef(), card = useRef() // prettier-ignore
   const vec = new THREE.Vector3(), ang = new THREE.Vector3(), rot = new THREE.Vector3(), dir = new THREE.Vector3() // prettier-ignore
   const segmentProps = { type: 'dynamic', canSleep: true, colliders: false, angularDamping: 2, linearDamping: 2 }
-  const { nodes, materials } = useGLTF('https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/5huRVDzcoDwnbgrKUo1Lzs/53b6dd7d6b4ffcdbd338fa60265949e1/tag.glb')
-  const texture = useTexture('https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/SOT1hmCesOHxEYxL7vkoZ/c57b29c85912047c414311723320c16b/band.jpg')
+  const { nodes, materials } = useGLTF('/tag.glb')
+
+
+
+  materials.base.map = useLoader(TextureLoader, '/VercelCardCustom.png') // card image, put in public
+
+
+
+  const texture = useTexture('/Band.png')
   const { width, height } = useThree((state) => state.size)
   const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]))
   const [dragged, drag] = useState(false)
@@ -78,7 +108,7 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera)
       dir.copy(vec).sub(state.camera.position).normalize()
       vec.add(dir.multiplyScalar(state.camera.position.length()))
-      ;[card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp())
+        ;[card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp())
       card.current?.setNextKinematicTranslation({ x: vec.x - dragged.x, y: vec.y - dragged.y, z: vec.z - dragged.z })
     }
     if (fixed.current) {
@@ -104,6 +134,8 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
   curve.curveType = 'chordal'
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping
 
+
+
   return (
     <>
       <group position={[0, 4, 0]}>
@@ -126,8 +158,35 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
             onPointerOut={() => hover(false)}
             onPointerUp={(e) => (e.target.releasePointerCapture(e.pointerId), drag(false))}
             onPointerDown={(e) => (e.target.setPointerCapture(e.pointerId), drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation()))))}>
+
+
+
             <mesh geometry={nodes.card.geometry}>
-              <meshPhysicalMaterial map={materials.base.map} map-anisotropy={16} clearcoat={1} clearcoatRoughness={0.15} roughness={0.3} metalness={0.5} />
+              <meshPhysicalMaterial
+                map={materials.base.map}
+                map-anisotropy={16}
+                clearcoat={1}
+                clearcoatRoughness={0.15}
+                iridescence={1}
+                iridescenceIOR={1}
+                iridescenceThicknessRange={[0, 2400]}
+                roughness={0.3}
+                metalness={0.5}
+              >
+                <RenderTexture attach="map" >
+
+                  <PerspectiveCamera makeDefault manual aspect={1.05} position={[0, 0, 1]} />
+                  <mesh>
+                    <planeGeometry args={[1, -1 / 1]}/>
+                    <meshBasicMaterial transparent map={materials.base.map} side={THREE.BackSide} />
+                  </mesh>
+
+                  <BadgeTexture user={{
+                    firstName: 'Denny',
+                    lastName: 'Ung'
+                  }} />
+                </RenderTexture>
+              </meshPhysicalMaterial>
             </mesh>
             <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
             <mesh geometry={nodes.clamp.geometry} material={materials.metal} />

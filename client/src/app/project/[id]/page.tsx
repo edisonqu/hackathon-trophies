@@ -2,96 +2,52 @@
 import Badge from "@/components/badge";
 import Nav from "@/components/nav";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const project = {
-  app_links: [
-    "https://www.accessainot.online/",
-    "https://docs.google.com/presentation/d/1LiaTGtzxPx6jZ1KQC0JWDZ1jfbXNv_s04THeeoG51GE/edit?usp=sharing",
-    "https://github.com/edisonqu/AccessAI",
-  ],
-  built_with: ["amazon-web-services", "cohere", "openai", "twilio"],
-  content: `
-    \n\t
-    Devpost
-    
-    \n\t
-    Grow your developer ecosystem and promote your platform.`,
-  created_by: ["Edison Qu"],
-  gallery: [
-    {
-      caption: null,
-      url: "https://www.youtube.com/embed/OFZDiMEO--0?enablejsapi=1&hl=en_US&rel=0&start=&version=3&wmode=transparent",
-    },
-    {
-      caption: "",
-      url: "https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/002/379/684/datas/original.png",
-    },
-    {
-      caption: "",
-      url: "https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/002/379/688/datas/original.png",
-    },
-    {
-      caption: "",
-      url: "https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/002/379/687/datas/original.gif",
-    },
-    {
-      caption: "",
-      url: "https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/002/379/686/datas/original.gif",
-    },
-    {
-      caption: "",
-      url: "https://d112y698adiu2z.cloudfront.net/photos/production/software_photos/002/379/685/datas/original.png",
-    },
-  ],
-  liked_by: [
-    "taimooraleem",
-    "jeremysu64",
-    "itsannawei",
-    "StephenNi",
-    "vihaan436",
-    "yasmine1534",
-    "michelle4891",
-    "notzree",
-    "Rajdeep-k7",
-    "boredzana",
-  ],
-  likes: 10,
-  submissions: [
-    {
-      title: "",
-      url: "https://hackville2023.devpost.com/",
-      winner_description:
-        "1st Place: Anker Soundcore 3 \u2014 Bluetooth Speaker with Stereo Sound",
-      winner_label: "Winner",
-    },
-    {
-      winner_description:
-        "1st Place: Anker Soundcore 3 \u2014 Bluetooth Speaker with Stereo Sound",
-      winner_label: "Winner",
-    },
-    {
-      winner_description: "Google Developers Student Club Challenge",
-      winner_label: "Winner",
-    },
-  ],
-  submitted_to: ["Hackville 2023"],
-  updates: [
-    {
-      comments: [],
-      created_at: "2023-02-12T06:08:41.000Z",
-      update: "    Leave feedback in the comments!    ",
-      user: "web3",
-    },
-  ],
+const sendProjectDataToAPI = async (projectName) => {
+  try {
+    const response = await fetch(`https://hackathon-trophies.onrender.com/project/${projectName}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log('API Response:', data);
+    return data; // Return the JSON data
+  } catch (error) {
+    console.error('Error:', error);
+    return null; // Return null or an empty object in case of an error
+  }
 };
 
 const ProjectPage = ({ params }: { params: { id: string } }) => {
+  const [projectJSON, setProjectJSON] = useState(null); // Initialize state for the project data
   const [trophyModal, setTrophyModal] = useState(false);
-
   const router = useRouter();
+
+  useEffect(() => {
+    if (params.id) {
+      const projectName = params.id; // Extract the project name dynamically
+      sendProjectDataToAPI(projectName).then((data) => {
+        if (data) {
+          setProjectJSON(data); // Set the project data in state
+        }
+      });
+    }
+  }, [params.id]);
+
   if (!params.id) {
     return <div>Loading...</div>;
+  }
+
+  if (!projectJSON) {
+    return <div>Loading project data...</div>; // Show a loading state until the project data is fetched
   }
 
   console.log(params.id);
@@ -108,42 +64,28 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
             </button>
             <div className="gap-4 flex flex-col">
               <h1 className="text-4xl font-bold">
-                {project.submissions[0].winner_description}
+                {projectJSON.projectName || 'No Project Name Available'}
               </h1>
-              <h1 className="text-4xl font-normal">@ {project.submitted_to}</h1>
+              <h1 className="text-4xl font-normal">@ {projectJSON.submitted_to.join(', ')}</h1>
               <div className="whitespace-pre-line leading-2">
                 <div className="space-y-2">
-                  {/* {project.content.split("\n\t").map((c) => (
-                    <div>{c.trim()}</div>
-                  ))} */}
+                  {projectJSON.content?.split("\n\t").map((c, index) => (
+                    <div key={index}>{c.trim()}</div>
+                  ))}
                 </div>
               </div>
             </div>
             <div>
-              <div className="flex gap-[10px] items-center">
-                <div className="font-bold text-xl py-[10px]">Anthony Ung</div>
-                <div>@adlskf</div>
-                <div className="bg-[#FACC15] p-[10px] font-semibold">
-                  Claimed
-                </div>
-              </div>
-              <div className="flex gap-[10px] items-center">
-                <div className="font-bold text-xl py-[10px]">Anthony Ung</div>
-                <div>@adlskf</div>
-                {/* <div className="bg-[#FACC15] p-[10px] font-semibold">
-                  Claimed
-                </div> */}
-              </div>
-              <div className="flex gap-[10px] items-center">
-                <div className="font-bold text-xl py-[10px]">Anthony Ung</div>
-                <div>@adlskf</div>
-                {/* <div className="bg-[#FACC15] p-[10px] font-semibold">
-                  Claimed
-                </div> */}
+              <div className="space-y-4">
+                {projectJSON.created_by.map((creator, index) => (
+                  <div key={index} className="flex gap-[10px] items-center">
+                    <div className="font-bold text-xl py-[10px]">{creator}</div>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="flex flex-wrap w-full gap-2">
-              {project.built_with.map((tool) => (
+              {projectJSON.built_with.map((tool) => (
                 <span
                   key={tool}
                   className="bg-gray-100 px-4 py-3 rounded-sm w-fit"
@@ -151,9 +93,17 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
                   {tool}
                 </span>
               ))}
+
+              {projectJSON.submissions[0] && (
+                <span
+                  className="bg-gray-200 px-4 py-3 rounded-sm w-fit"
+                >
+                  {projectJSON.submissions[0].winner_description || 'No Description'}
+                </span>
+              )}
             </div>
           </div>
-          <div className="py-8 ">
+          <div className="py-8">
             <button
               onClick={() => setTrophyModal(true)}
               className="bg-gray-800 text-gray-100 px-4 py-3 rounded-sm w-fit cursor-pointer"
@@ -198,7 +148,6 @@ const AddTrophyModal = ({ onSubmit, onClose }) => {
       }
     >
       <div className="bg-white p-4 rounded-sm grid gap-4 m-2 w-full max-w-lg text-sm">
-        {/* <h1 className="text-lg font-semibold">Add Trophy</h1> */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
