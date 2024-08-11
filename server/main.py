@@ -1,11 +1,13 @@
 
 from flask import Flask, jsonify, redirect
 import requests
+from flask_cors import CORS  # {{ edit_1 }}
+
 from info import get_user_projects, user, project
 
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
-
+CORS(app) 
 # # Supabase setup
 # supabase_url = "https://btahofdsulgqngacxslu.supabase.co"
 # supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0YWhvZmRzdWxncW5nYWN4c2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjMzNjIwMDAsImV4cCI6MjAzODkzODAwMH0.3PO4D2OoJ1achcgcBkAC8E7ciZ5CUQvsViNBFNW1_d4"
