@@ -17,6 +17,15 @@ def fixurl(url):
 def checkurl(url):
   return re.match(re.compile('^(?:http|ftp)s?://(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\\.)+(?:[A-Z]{2,6}\\.?|[A-Z0-9-]{2,}\\.?)\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(?::\\d+)?(?:/?|[/?]\\S+)$', re.IGNORECASE), url) is not None
 
+def get_user_projects(username):
+    url = f"https://devpost.com/{username}"
+    mainreq = requests.get(url, headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'})
+    if mainreq.status_code != 404:
+        user_data = user(mainreq, username)
+        return user_data.get("projects", [])
+    else:
+        return None
+    
 def user(mainreq, username):
   info = {}
 
@@ -106,14 +115,6 @@ def user(mainreq, username):
     projs.append(proj['href'].replace("https://devpost.com/software/", ""))
   info['projects'] = projs
 
-  info['project_details'] = []
-  for project_name in projs:
-      project_url = f"https://devpost.com/software/{project_name}"
-      project_req = requests.get(project_url, headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'})
-      project_info = project(project_req, project_name)
-      info['project_details'].append(project_info)
-
-
   hackathons = []
   for hack in BeautifulSoup(requests.get("https://devpost.com/" + username + "/challenges", headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}).text, 'html.parser').findAll("a", {"data-role": "featured_challenge"}):
     hackathons.append(urlparse(hack['href']).hostname.split('.')[0])
@@ -163,9 +164,10 @@ def project(mainreq, name):
         'indentation': (None, "TABS")
       }
       response = requests.post('https://www.freeformatter.com/html-formatter.html', files=multipart_form_data)
-      content = response.text
+
+      
       break
-  info['content'] = content.translate(dict([(ord(x), ord(y)) for x, y in zip(u"‘’´“”–-", u"'''\"\"--")]))
+
 
   try:
     built_with = []
@@ -220,7 +222,7 @@ def project(mainreq, name):
 
   ids = []
   temphtml = []
-  mastercomments = []
+  info['projectName'] = name
   users = []
   times = []
   for art in soup.findAll("article"):
