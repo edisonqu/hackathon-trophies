@@ -85,7 +85,7 @@ function Band({ maxSpeed = 50, minSpeed = 10 }) {
 
 
 
-  const texture = useTexture('/Band.png')
+  const texture = useTexture('/band.png')
   const { width, height } = useThree((state) => state.size)
   const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]))
   const [dragged, drag] = useState(false)
