@@ -1,3 +1,4 @@
+"use client";
 import ProjectCard from "@/components/project-card";
 import { ChevronLeftIcon } from "lucide-react";
 import { useRouter } from "next/router";
