@@ -23,7 +23,7 @@ export default function LoginPage() {
   const [selectedProject, setSelectedProject] = useState("");
   const [worldcoinVerified, setWorldcoinVerified] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     try {
@@ -48,6 +48,7 @@ export default function LoginPage() {
       setProjects(projectData);
       setError(null); // Reset any previous errors
     } catch (err) {
+        // @ts-ignore
       setError(err.message);
       setUserInfo(null); // Reset userInfo in case of error
       setProjects([]); // Reset projects in case of error
@@ -115,7 +116,7 @@ export default function LoginPage() {
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             {!worldcoinVerified && <IDKitWidget
-              app_id={process.env.NEXT_PUBLIC_APP_ID || "default_app_id"} // Provide a default value
+              app_id={`app_${process.env.NEXT_PUBLIC_APP_ID || 'app_staging_5d32f2b8365469d918d4c643ac75c2cc'}`}
               action="verify"
               onSuccess={onSuccess}
               handleVerify={handleVerify}
