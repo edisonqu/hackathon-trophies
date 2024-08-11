@@ -106,10 +106,13 @@ def user(mainreq, username):
     projs.append(proj['href'].replace("https://devpost.com/software/", ""))
   info['projects'] = projs
 
-  likes = []
-  for like in BeautifulSoup(requests.get("https://devpost.com/" + username + "/likes", headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}).text, 'html.parser').findAll("a", class_="link-to-software"):
-    likes.append(like['href'].replace("https://devpost.com/software/", ""))
-  info['likes'] = likes
+  info['project_details'] = []
+  for project_name in projs:
+      project_url = f"https://devpost.com/software/{project_name}"
+      project_req = requests.get(project_url, headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'})
+      project_info = project(project_req, project_name)
+      info['project_details'].append(project_info)
+
 
   hackathons = []
   for hack in BeautifulSoup(requests.get("https://devpost.com/" + username + "/challenges", headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}).text, 'html.parser').findAll("a", {"data-role": "featured_challenge"}):
@@ -233,49 +236,13 @@ def project(mainreq, name):
       except:
         users.append("Private user")
       times.append(datetime.strptime(art.time.attrs['datetime'].replace(art.time.attrs['datetime'].split(":")[-2:][0][2:] + ":" + art.time.attrs['datetime'].split(":")[-2:][1], art.time.attrs['datetime'].split(":")[-2:][0][2:] + art.time.attrs['datetime'].split(":")[-2:][1]), '%Y-%m-%dT%H:%M:%S%z').strftime("%Y-%m-%dT%H:%M:%S") + ".000Z")
-  for mainid in ids:
-    comments = []
-    maindict = requests.get("https://devpost.com/software_updates/" + mainid + "/comments", headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}).json()
-    for page in range(int(maindict['meta']['pagination']['total_pages'])):
-      pagenum = page+1
-      commentdict = requests.get("https://devpost.com/software_updates/" + mainid + "/comments?page=" + str(pagenum), headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}).json()
-      for comment in commentdict['comments']:
-        tempcomment = {}
-        tempcomment['user'] = comment['user']['screen_name']
-        tempcomment['comment'] = comment['html_body']
-        temptime = datetime.strptime(comment['created_at'].replace(comment['created_at'].split(":")[-2:][0][2:] + ":" + comment['created_at'].split(":")[-2:][1], comment['created_at'].split(":")[-2:][0][2:] + comment['created_at'].split(":")[-2:][1]), '%Y-%m-%dT%H:%M:%S%z')
-        # print(comment['created_at'].replace(comment['created_at'].split(":")[-2:][0][2:] + ":" + comment['created_at'].split(":")[-2:][1], comment['created_at'].split(":")[-2:][0][2:] + comment['created_at'].split(":")[-2:][1]))
-        tempcomment['created_at'] = temptime.strftime("%Y-%m-%dT%H:%M:%S") + ".000Z"
-        comments.append(tempcomment)
-        # ?page=
-    mastercomments.append(list(reversed(comments)))
-  final = []
-  for created_at, user, html, comments in zip(times, users, temphtml, mastercomments):
-    final.append({"user": user, "update": html, "created_at": created_at, "comments": comments})
-  info['updates'] = final
 
-  soup2 = BeautifulSoup(requests.get("https://devpost.com/software/" + name + "/likes?page=1", headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}).text, 'html.parser')
   pages = []
-  for li in soup2.findAll("li"):
+  for li in soup.findAll("li"):
     if len(dict(li.attrs).keys()) == 0:
       try:
         pages.append(int(li.string))
       except:
         pass
-  pagenum = pages[-1] if len(pages) != 0 else 1
-  liked_by = []
-  for page in range(pagenum):
-    response = requests.get(
-      "https://devpost.com/software/" + name + "/likes?page=" + str(page+1),
-      headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'}
-    )
-    for a in BeautifulSoup(response.text, 'html.parser').findAll("a", class_="user-profile-link"):
-      liked_by.append(a['href'].replace("https://devpost.com/", ""))
-  if len(liked_by) != 0:
-    for x in range(pagenum - len(liked_by)):
-      liked_by.append("Private user")
-  info['liked_by'] = liked_by
-
-  info['likes'] = len(liked_by)
 
   return info
