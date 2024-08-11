@@ -1,17 +1,20 @@
 const Nav = () => {
   return (
-    <div className="fixed bottom-0 w-screen grid place-items-center min-h-20 z-10">
-      <div className="bg-[#36312950] text-white p-[10px] rounded-[10px]">
-        <div className="flex gap-[10px]">
-          <button className="bg-white text-gray-950 px-4 py-3 rounded-sm w-fit">
+    <div className="fixed bottom-10 w-screen grid place-items-center min-h-20 z-10">
+      <div className="bg-black bg-opacity-50 text-white p-4 rounded-md flex items-center shadow-lg">
+        <div className="flex gap-4 items-center">
+          <button className="bg-white text-gray-950 px-4 py-2 rounded-md flex items-center justify-center">
+            <span className="mr-2">🏠</span> {/* You can replace this with an actual icon */}
             Home
           </button>
-          <button className="bg-white text-gray-950 px-4 py-3 rounded-sm w-fit">
-            @alex
+          <button className="bg-transparent text-white border border-white px-4 py-2 rounded-lg flex items-center justify-center">
+            <span className="mr-2">⌘ + K</span>
+            Search
           </button>
         </div>
-        {/* <img className="w-20 h-20" /> */}
-        <div className="w-20 gap-20 bg-gray-900">pic</div>
+        <div className="w-12 h-12 bg-gray-900 rounded-md ml-4 flex items-center justify-center">
+          <span className="text-white">pic</span> {/* Replace with an actual image or icon */}
+        </div>
       </div>
     </div>
   );
