@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Badge from "components/badge";
+import Badge from "../components/badge";
 
 export default function Home() {
   return (
