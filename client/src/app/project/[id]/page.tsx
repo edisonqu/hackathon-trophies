@@ -3,6 +3,8 @@ import Badge from "@/components/badge";
 import Nav from "@/components/nav";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { ethers } from 'ethers';
+import abi from '../../../../public/abi.json'
 
 const sendProjectDataToAPI = async (projectName) => {
   try {
@@ -46,9 +48,42 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
     return <div>Loading...</div>;
   }
 
-  if (!projectJSON) {
-    return <div>Loading project data...</div>; // Show a loading state until the project data is fetched
-  }
+  const mintNFT = async () => {
+  
+    const contractAddress = '0xdCBA455D9065d6A2d4A83623c42aFBd3f148cB78';
+    // @ts-ignore
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+  
+    const contract = new ethers.Contract(contractAddress, abi.result, signer);
+  
+    try {
+      const mintPrice = await contract.mintFee(1); // Assuming mintFee function exists and returns the price for minting 1 NFT
+      const tx = await contract.mint({ value: mintPrice, gasLimit: 1 });
+      await tx.wait();
+      alert('NFT minted successfully!');
+    } catch (error) {
+      console.error('Failed to mint NFT:', error);
+      // @ts-ignore
+      if (error.reason) {
+        // @ts-ignore
+        alert(`Failed to mint NFT: ${error.reason}`);
+        // @ts-ignore
+      } else if (error.data) {
+        // Try to decode the error data
+        try {
+          // @ts-ignore
+          const decodedError = contract.interface.parseError(error.data);
+          // @ts-ignore
+          alert(`Failed to mint NFT: ${decodedError.name}`);
+        } catch {
+          alert('Failed to mint NFT. Check console for details.');
+        }
+      } else {
+        alert('Failed to mint NFT. Check console for details.');
+      }
+    }
+  };
 
   console.log(params.id);
   return (
@@ -105,7 +140,9 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
           </div>
           <div className="py-8">
             <button
-              onClick={() => setTrophyModal(true)}
+              onClick={()=>{
+                router.push('https://stellar-trophies.testnet.nfts2.me/')
+              }}
               className="bg-gray-800 text-gray-100 px-4 py-3 rounded-sm w-fit cursor-pointer"
             >
               Add Trophy
@@ -116,17 +153,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
           <Badge color={"cyan"} label={"some label"} />
         </div>
       </div>
-      {trophyModal && (
-        <div className="fixed top-0 left-0 z-20 w-screen h-screen bg-gray-900/50 grid place-items-center">
-          <AddTrophyModal
-            onSubmit={(trophy) => {
-              setTrophyModal(false);
-              return undefined;
-            }}
-            onClose={() => setTrophyModal(false)}
-          />
-        </div>
-      )}
+
     </main>
   );
 };
@@ -138,45 +165,47 @@ type AddTrophyModalProps = {
   onClose: () => void;
 };
 
-const AddTrophyModal = ({ onSubmit, onClose }) => {
-  const [trophy, setTrophy] = useState("");
+// const AddTrophyModal = ({ onSubmit, onClose }) => {
+//   const [trophy, setTrophy] = useState("");
 
-  return (
-    <div
-      className={
-        "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center font-mono"
-      }
-    >
-      <div className="bg-white p-4 rounded-sm grid gap-4 m-2 w-full max-w-lg text-sm">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            return onSubmit(trophy);
-          }}
-        >
-          <p className="py-2">Devpost URL</p>
-          <input
-            type="text"
-            value={trophy}
-            onChange={(e) => setTrophy(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-sm"
-          />
-          <div className="flex justify-end gap-2 mt-2">
-            <button
-              onClick={onClose}
-              className="border-2 border-red-600 text-red-600 px-4 py-2 rounded-sm"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-gray-800 text-white px-4 py-2 rounded-sm"
-            >
-              Add Trophy
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div
+//       className={
+//         "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center font-mono"
+//       }
+//     >
+//       <div className="bg-white p-4 rounded-sm grid gap-4 m-2 w-full max-w-lg text-sm">
+//         {/* <h1 className="text-lg font-semibold">Add Trophy</h1> */}
+//         <form
+//           onSubmit={(e) => {
+//             e.preventDefault();
+//             return onSubmit(trophy);
+//           }}
+//         >
+//           <p className="py-2">Devpost URL</p>
+//           <input
+//             type="text"
+//             value={trophy}
+//             onChange={(e) => setTrophy(e.target.value)}
+//             className="w-full p-2 border border-gray-300 rounded-sm"
+//           />
+//           <div className="flex justify-end gap-2 mt-2">
+//             <button
+//               onClick={onClose}
+//               className="border-2 border-red-600 text-red-600 px-4 py-2 rounded-sm"
+//             >
+//               Cancel
+//             </button>
+//             <button
+//               type="submit"
+//               className="bg-gray-800 text-white px-4 py-2 rounded-sm"
+//               onClick={mintNFT}
+//             >
+//               Add Trophy
+//             </button>
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
