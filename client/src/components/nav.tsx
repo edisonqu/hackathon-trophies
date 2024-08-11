@@ -9,8 +9,7 @@ const Nav = () => {
             Home
           </button>
           <button className="bg-transparent text-white border border-white px-4 py-2 rounded-lg flex items-center justify-center">
-            <span className="mr-2">⌘ + K</span>
-            Search
+            Connect Wallet
           </button>
         </div>
         <div className="w-12 h-12 bg-gray-900 rounded-md ml-4 flex items-center justify-center">
