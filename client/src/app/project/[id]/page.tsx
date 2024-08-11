@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { ethers } from 'ethers';
 import abi from '../../../../public/abi.json'
 
+// @ts-ignore
 const sendProjectDataToAPI = async (projectName) => {
   try {
     const response = await fetch(`https://hackathon-trophies.onrender.com/project/${projectName}`, {
@@ -48,15 +49,18 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
     return <div>Loading...</div>;
   }
 
+  if (!projectJSON) {
+    return <div>Loading project data...</div>; // Show a loading state until the project data is fetched
+  }
+
   const mintNFT = async () => {
-  
     const contractAddress = '0xdCBA455D9065d6A2d4A83623c42aFBd3f148cB78';
     // @ts-ignore
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
-  
+
     const contract = new ethers.Contract(contractAddress, abi.result, signer);
-  
+
     try {
       const mintPrice = await contract.mintFee(1); // Assuming mintFee function exists and returns the price for minting 1 NFT
       const tx = await contract.mint({ value: mintPrice, gasLimit: 1 });
@@ -99,12 +103,17 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
             </button>
             <div className="gap-4 flex flex-col">
               <h1 className="text-4xl font-bold">
-                {projectJSON.projectName || 'No Project Name Available'}
+                {/* @ts-ignore */}
+                {projectJSON?.projectName || 'No Project Name Available'}
               </h1>
-              <h1 className="text-4xl font-normal">@ {projectJSON.submitted_to.join(', ')}</h1>
+                {/* @ts-ignore */}
+
+              <h1 className="text-4xl font-normal">@ {projectJSON?.submitted_to?.join(', ')}</h1>
               <div className="whitespace-pre-line leading-2">
                 <div className="space-y-2">
-                  {projectJSON.content?.split("\n\t").map((c, index) => (
+                {/* @ts-ignore */}
+
+                  {projectJSON?.content?.split("\n\t").map((c, index) => (
                     <div key={index}>{c.trim()}</div>
                   ))}
                 </div>
@@ -112,7 +121,9 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
             </div>
             <div>
               <div className="space-y-4">
-                {projectJSON.created_by.map((creator, index) => (
+                {/* @ts-ignore */}
+
+                {projectJSON?.created_by?.map((creator, index) => (
                   <div key={index} className="flex gap-[10px] items-center">
                     <div className="font-bold text-xl py-[10px]">{creator}</div>
                   </div>
@@ -120,7 +131,9 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
             <div className="flex flex-wrap w-full gap-2">
-              {projectJSON.built_with.map((tool) => (
+                {/* @ts-ignore */}
+
+              {projectJSON?.built_with?.map((tool) => (
                 <span
                   key={tool}
                   className="bg-gray-100 px-4 py-3 rounded-sm w-fit"
@@ -128,11 +141,14 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
                   {tool}
                 </span>
               ))}
+                {/* @ts-ignore */}
 
-              {projectJSON.submissions[0] && (
+              {projectJSON?.submissions?.[0] && (
                 <span
                   className="bg-gray-200 px-4 py-3 rounded-sm w-fit"
                 >
+                {/* @ts-ignore */}
+
                   {projectJSON.submissions[0].winner_description || 'No Description'}
                 </span>
               )}
@@ -140,7 +156,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
           </div>
           <div className="py-8">
             <button
-              onClick={()=>{
+              onClick={() => {
                 router.push('https://stellar-trophies.testnet.nfts2.me/')
               }}
               className="bg-gray-800 text-gray-100 px-4 py-3 rounded-sm w-fit cursor-pointer"
@@ -150,62 +166,13 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
         <div className="w-2/3 h-screen rounded-sm overflow-hidden">
+                {/* @ts-ignore */}
+
           <Badge color={"cyan"} label={"some label"} />
         </div>
       </div>
-
     </main>
   );
 };
 
 export default ProjectPage;
-
-type AddTrophyModalProps = {
-  onSubmit: (trophy: string) => void;
-  onClose: () => void;
-};
-
-// const AddTrophyModal = ({ onSubmit, onClose }) => {
-//   const [trophy, setTrophy] = useState("");
-
-//   return (
-//     <div
-//       className={
-//         "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center font-mono"
-//       }
-//     >
-//       <div className="bg-white p-4 rounded-sm grid gap-4 m-2 w-full max-w-lg text-sm">
-//         {/* <h1 className="text-lg font-semibold">Add Trophy</h1> */}
-//         <form
-//           onSubmit={(e) => {
-//             e.preventDefault();
-//             return onSubmit(trophy);
-//           }}
-//         >
-//           <p className="py-2">Devpost URL</p>
-//           <input
-//             type="text"
-//             value={trophy}
-//             onChange={(e) => setTrophy(e.target.value)}
-//             className="w-full p-2 border border-gray-300 rounded-sm"
-//           />
-//           <div className="flex justify-end gap-2 mt-2">
-//             <button
-//               onClick={onClose}
-//               className="border-2 border-red-600 text-red-600 px-4 py-2 rounded-sm"
-//             >
-//               Cancel
-//             </button>
-//             <button
-//               type="submit"
-//               className="bg-gray-800 text-white px-4 py-2 rounded-sm"
-//               onClick={mintNFT}
-//             >
-//               Add Trophy
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };

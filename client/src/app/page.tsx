@@ -114,9 +114,8 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {!worldcoinVerified && <IDKitWidget
-              app_id={`app_${process.env.NEXT_PUBLIC_APP_ID || 'app_staging_5d32f2b8365469d918d4c643ac75c2cc'}`}
+        {!worldcoinVerified && <IDKitWidget
+              app_id={`${process.env.NEXT_PUBLIC_APP_ID || 'app_staging_5d32f2b8365469d918d4c643ac75c2cc'}`}
               action="verify"
               onSuccess={onSuccess}
               handleVerify={handleVerify}
@@ -135,6 +134,8 @@ export default function LoginPage() {
                 </button>
               )}
             </IDKitWidget>}
+          <form onSubmit={handleSubmit} className="space-y-6">
+          
 
 {  worldcoinVerified &&         <> <div>
               <p className="">Please enter your Devpost username.</p>
