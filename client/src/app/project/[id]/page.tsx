@@ -65,6 +65,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
       const mintPrice = await contract.mintFee(1); // Assuming mintFee function exists and returns the price for minting 1 NFT
       const tx = await contract.mint({ value: mintPrice, gasLimit: 1 });
       await tx.wait();
+      router.push(`https://base-sepolia.blockscout.com/address/${tx}`)
       alert('NFT minted successfully!');
     } catch (error) {
       console.error('Failed to mint NFT:', error);
