@@ -103,19 +103,37 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
               <img src="/back.svg" alt="back" className="w-6 h-6" />
             </button>
             <div className="gap-4 flex flex-col">
-              <h1 className="text-4xl font-bold">project name?</h1>
-              <p>{project.content}</p>
+              <h1 className="text-4xl font-bold">
+                {project.submissions[0].winner_description}
+              </h1>
+              <h1 className="text-4xl font-normal">@ {project.submitted_to}</h1>
+              <p className="whitespace-pre-line leading-2">
+                <div className="space-y-2">
+                  {project.content.split("\n\t").map((c) => (
+                    <div>{c.trim()}</div>
+                  ))}
+                </div>
+              </p>
             </div>
-            {/* <div className="flex flex-wrap w-full gap-2">
-            {user.interests.map((interest) => (
-              <span
-                key={interest}
-                className="bg-gray-100 px-4 py-3 rounded-sm w-fit"
-              >
-                {interest}
-              </span>
-            ))}
-          </div> */}
+            <div>
+              <div className="flex gap-[10px] items-center">
+                <div className="font-bold text-xl py-[10px]">Anthony Ung</div>
+                <div>@adlskf</div>
+                <div className="bg-[#FACC15] p-[10px] font-semibold">
+                  Claimed
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap w-full gap-2">
+              {project.built_with.map((tool) => (
+                <span
+                  key={tool}
+                  className="bg-gray-100 px-4 py-3 rounded-sm w-fit"
+                >
+                  {tool}
+                </span>
+              ))}
+            </div>
           </div>
           <div className="py-8 ">
             <button className="bg-gray-800 text-gray-100 px-4 py-3 rounded-sm w-fit">
@@ -123,7 +141,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
             </button>
           </div>
         </div>
-        <div className="w-2/3 h-screen rounded-sm">
+        <div className="w-2/3 h-screen rounded-sm overflow-hidden">
           <Badge />
         </div>
       </div>
