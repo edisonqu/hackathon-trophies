@@ -22,6 +22,7 @@ const config = {
         'cream': '#FAF8F0',
         'rose': {
           400: '#F472B6',
+          500: '#EC4899',
         },
         'orange': {
           400: '#FB923C',
