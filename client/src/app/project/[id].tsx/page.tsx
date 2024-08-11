@@ -1,6 +1,5 @@
-"use client";
 import Badge from "@/components/badge";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const project = {
   app_links: [
@@ -20,10 +19,10 @@ const project = {
     ","user":"web3"}]}`,
 };
 
-const ProjectPage = (props: any, { id }: { id: string }) => {
-  console.log(id);
+const ProjectPage = ({ params }: { params: { id: string } }) => {
+  const router = useRouter();
 
-  if (!id) {
+  if (!params.id) {
     return <div>Loading...</div>;
   }
 
@@ -31,7 +30,7 @@ const ProjectPage = (props: any, { id }: { id: string }) => {
     <main className="flex min-h-screen flex-col items-center justify-between p-4">
       <div className="z-10 w-full max-w-8xl items-center justify-between font-mono text-sm lg:flex flex-col">
         <div className="py-24">
-          <h1 className="text-4xl font-bold">{id}</h1>
+          <h1 className="text-4xl font-bold">{params.id}</h1>
         </div>
         <div className="grid grid-cols-4 gap-4 w-full">
           <Badge />
