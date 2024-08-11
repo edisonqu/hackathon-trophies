@@ -20,6 +20,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ id, color }) => {
     >
       <div className="pt-[100%]"></div> {/* This div ensures the 1:1 ratio */}
       <div className="absolute inset-0 flex items-center justify-center rounded-lg">
+                {/* @ts-ignore */}
+
         <Badge color={color} label={id}/>
       </div>
     </div>
