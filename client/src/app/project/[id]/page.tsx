@@ -113,9 +113,9 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
               <h1 className="text-4xl font-normal">@ {project.submitted_to}</h1>
               <div className="whitespace-pre-line leading-2">
                 <div className="space-y-2">
-                  {project.content.split("\n\t").map((c) => (
+                  {/* {project.content.split("\n\t").map((c) => (
                     <div>{c.trim()}</div>
-                  ))}
+                  ))} */}
                 </div>
               </div>
             </div>
