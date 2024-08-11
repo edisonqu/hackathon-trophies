@@ -41,9 +41,6 @@ const Nav = () => {
             {account ? account : 'Connect Wallet'}
           </button>
         </div>
-        <div className="w-12 h-12 bg-gray-900 rounded-md ml-4 flex items-center justify-center">
-          <span className="text-white">pic</span>
-        </div>
       </div>
     </div>
   );

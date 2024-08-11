@@ -136,7 +136,7 @@ export default function LoginPage() {
               )}
             </IDKitWidget>}
 
-            <div>
+{  worldcoinVerified &&         <> <div>
               <p className="">Please enter your Devpost username.</p>
               <div className="mt-2">
                 <input
@@ -158,7 +158,10 @@ export default function LoginPage() {
                 Sign up
               </button>
             </div>
+            </>
+            }
           </form>
+          
 
           {error && <div className="mt-4 text-red-500">Error: {error}</div>}
 
