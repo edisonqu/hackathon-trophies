@@ -2,15 +2,14 @@
 from flask import Flask, jsonify, redirect
 import requests
 from info import get_user_projects, user, project
-from supabase import create_client, Client
 
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
-# Supabase setup
-supabase_url = "https://btahofdsulgqngacxslu.supabase.co"
-supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0YWhvZmRzdWxncW5nYWN4c2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjMzNjIwMDAsImV4cCI6MjAzODkzODAwMH0.3PO4D2OoJ1achcgcBkAC8E7ciZ5CUQvsViNBFNW1_d4"
-supabase: Client = create_client(supabase_url, supabase_key)
+# # Supabase setup
+# supabase_url = "https://btahofdsulgqngacxslu.supabase.co"
+# supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0YWhvZmRzdWxncW5nYWN4c2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjMzNjIwMDAsImV4cCI6MjAzODkzODAwMH0.3PO4D2OoJ1achcgcBkAC8E7ciZ5CUQvsViNBFNW1_d4"
+# supabase: Client = create_client(supabase_url, supabase_key)
 
 # def save_user_to_db(user_data):
 #     # Prepare user payload
