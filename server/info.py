@@ -238,7 +238,7 @@ def project(mainreq, name):
       times.append(datetime.strptime(art.time.attrs['datetime'].replace(art.time.attrs['datetime'].split(":")[-2:][0][2:] + ":" + art.time.attrs['datetime'].split(":")[-2:][1], art.time.attrs['datetime'].split(":")[-2:][0][2:] + art.time.attrs['datetime'].split(":")[-2:][1]), '%Y-%m-%dT%H:%M:%S%z').strftime("%Y-%m-%dT%H:%M:%S") + ".000Z")
 
   pages = []
-  for li in soup2.findAll("li"):
+  for li in soup.findAll("li"):
     if len(dict(li.attrs).keys()) == 0:
       try:
         pages.append(int(li.string))
